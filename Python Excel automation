@@ -1,0 +1,115 @@
+import openpyxl
+from tkinter import *
+from tkinter import filedialog
+from tkinter import ttk
+from openpyxl.styles import PatternFill
+
+master = Tk()
+master.geometry("300x200")  # Set window size
+master.title("Main Window")
+#exit_button = ttk.Button(
+    #master,
+    #text='Exit',
+    #command=lambda: master.quit()
+#)
+flag=""
+path1=""
+path2=""
+upload_button = ttk.Button(
+    master,
+    text='Upload DB1 Extract',
+    command=lambda: master.upload_file()
+)
+
+upload_button2 = ttk.Button(
+    master,
+    text='Upload DB2 Extract',
+    command=lambda: master.upload_file()
+)
+Compare_Button = ttk.Button(
+    master,
+    text='Compare',
+    command=lambda: master.compare()
+)
+
+
+
+def upload_file1():
+    filetypes = (
+        ('text files', '*.xlsx'),
+    )
+    # show the open file dialog
+    file = filedialog.askopenfile(filetypes=filetypes)
+    global path1
+    path1=file.name
+    print(path1)
+
+
+def upload_file2():
+    #path1 = filedialog.askopenfilename(title="Open a File", filetype=(("xlxs files", ".*xlsx"),("All Files", "*."))) # To open the file that you want.
+    filetypes = (
+        ('text files', '*.xlsx'),
+    )
+    # show the open file dialog
+    file1 = filedialog.askopenfile(filetypes=filetypes)
+    global path2
+    path2 = file1.name
+    print(path2)
+
+#exit_button.pack(
+    #ipadx=5,
+   # ipady=5,
+    #expand=True
+#)
+
+# Function to open a new window
+def open_new_window():
+    new_window = Toplevel(master)  # Create a new window
+    new_window.title("New Window")
+    new_window.geometry("250x150")
+
+    Label(new_window, text="This is a new window").pack(pady=20)
+
+# Create a label and a button to open the new window
+
+# Run the Tkinter event loop
+
+def compare():
+
+    print(path1)
+    print(path2)
+    wb_obj = openpyxl.load_workbook(path1)
+    wb_obj1 = openpyxl.load_workbook(path2)
+    sh = wb_obj.active
+    sh1 = wb_obj1.active
+    for i in range(1, sh.max_row + 1):
+        # print("\n")
+        #print("Row ", i, " data :")
+
+        for j in range(1, sh.max_column + 1):
+            cell_obj = sh.cell(row=i, column=j)
+            cell_obj1 = sh1.cell(row=i, column=j)
+            if (cell_obj1.value == cell_obj.value):
+                print("Perfect")
+                # sh1.cell(row=i, column=j).fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+                #print()
+            else:
+                global flag
+                flag="false"
+                sh1.cell(row=i, column=j).fill = PatternFill(start_color="FFFF00", end_color="FFFF00",fill_type="solid");
+        wb_obj1.save(path2);
+    if (flag == "false"):
+        Label(master, text="Unmatched data").pack(pady=10)
+    else:
+        Label(master, text="matched data").pack(pady=10)
+    print("Done")
+
+
+
+Label(master, text="Upload Excel files to compare the data").pack(pady=10)
+#Button(master, text="Open New Window", command=open_new_window).pack(pady=10)
+Button(master, text="Upload DB1 Extract", command=upload_file1).pack(pady=10)
+Button(master, text="Upload DB2 Extract", command=upload_file2).pack(pady=10)
+Button(master, text="Compare Excels", command=compare).pack(pady=10)
+
+master.mainloop()
