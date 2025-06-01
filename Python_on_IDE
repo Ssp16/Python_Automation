@@ -1,0 +1,37 @@
+# import openpyxl module
+import openpyxl
+import tkinter as tk
+from openpyxl.styles import PatternFill
+
+# Give the location of the file
+path = "Automation_Project.xlsx"
+path1="Samle.xlsx";
+
+# To open the workbook
+# workbook object is created
+wb_obj = openpyxl.load_workbook(path)
+wb_obj1 = openpyxl.load_workbook(path1)
+window = tk.Tk()
+#print(wb_obj.sheetnames)
+# Get workbook active sheet object
+# from the active attribute
+sh= wb_obj.active
+sh1=wb_obj1.active
+#print(sh1);
+for i in range(1, sh.max_row + 1):
+    #print("\n")
+    #print("Row ", i, " data :")
+
+    for j in range(1, sh.max_column + 1):
+        cell_obj = sh.cell(row=i, column=j)
+        cell_obj1= sh1.cell(row=i, column=j)
+        if(cell_obj1.value == cell_obj.value):
+            #print("good")
+            #sh1.cell(row=i, column=j).fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+            print()
+        else:
+            sh1.cell(row=i, column=j).fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+
+
+        #print(cell_obj.value, end=" ")
+wb_obj1.save(path1);
